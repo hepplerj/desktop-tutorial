@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charting Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #chart {
+            width: 1200px;
+            height: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Catholic Church Membership by City, 1926</h1>
+    <div id="chart"></div>
+    <script type="module">
+        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
+
+        async function fetchData() {
+            const response = await fetch('https://data.chnm.org/relcensus/city-membership?year=1926&denominationFamily=Catholic');
+            const data = await response.json();
+            return data;
+        }
+
+        fetchData().then(data => {
+            const chart = Plot.plot({
+                width: 1200, 
+                height: 500,
+                marginLeft: 80,
+                marks: [
+                    Plot.barY(data, {x: 'state', y: 'members'})
+                ]
+            });
+
+            document.getElementById('chart').appendChild(chart);
+        }).catch(error => {
+            console.error('Error fetching data:', error);
+        });
+    </script>
+</body>
+</html>
